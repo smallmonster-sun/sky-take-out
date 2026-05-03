@@ -15,22 +15,28 @@ import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
+import com.sky.result.Result;
 import com.sky.service.EmployeeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private EmployeeMapper employeeMapper;
+	@Autowired
+	private EmployeeService employeeService;
 
-    /**
+	/**
      * 员工登录
      *
      * @param employeeLoginDTO
@@ -106,5 +112,25 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return new PageResult(total,records);
 	}
 
+	/**
+	 * 启用禁用员工账号
+	 * @param status
+	 * @param id
+	 * @return
+	 */
+	public void startOrStop(Integer status, long id) {
+		//update employee set status = ? where id = ?
+
+		// Employee employee = new Employee();
+		// employee.setStatus(status);
+		// employee.setId(id);
+
+		Employee employee = Employee.builder()
+				.id(id)
+				.status(status)
+				.build();
+
+		employeeMapper.update(employee);
+	}
 
 }
