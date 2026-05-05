@@ -31,53 +31,54 @@ import java.util.List;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    @Autowired
-    private EmployeeMapper employeeMapper;
+	@Autowired
+	private EmployeeMapper employeeMapper;
 	@Autowired
 	private EmployeeService employeeService;
 
 	/**
-     * 员工登录
-     *
-     * @param employeeLoginDTO
-     * @return
-     */
-    public Employee login(EmployeeLoginDTO employeeLoginDTO) {
-        String username = employeeLoginDTO.getUsername();
-        String password = employeeLoginDTO.getPassword();
+	 * 员工登录
+	 *
+	 * @param employeeLoginDTO
+	 * @return
+	 */
+	public Employee login(EmployeeLoginDTO employeeLoginDTO) {
+		String username = employeeLoginDTO.getUsername();
+		String password = employeeLoginDTO.getPassword();
 
-        //1、根据用户名查询数据库中的数据
-        Employee employee = employeeMapper.getByUsername(username);
+		// 1、根据用户名查询数据库中的数据
+		Employee employee = employeeMapper.getByUsername(username);
 
-        //2、处理各种异常情况（用户名不存在、密码不对、账号被锁定）
-        if (employee == null) {
-            //账号不存在
-            throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
-        }
+		// 2、处理各种异常情况（用户名不存在、密码不对、账号被锁定）
+		if (employee == null) {
+			// 账号不存在
+			throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
+		}
 
-        //密码比对
-        // TODO 后期需要进行md5加密，然后再进行比对
-        if (!password.equals(employee.getPassword())) {
-            //密码错误
-            throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
-        }
+		// 密码比对
+		// TODO 后期需要进行md5加密，然后再进行比对
+		if (!password.equals(employee.getPassword())) {
+			// 密码错误
+			throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
+		}
 
-        if (employee.getStatus() == StatusConstant.DISABLE) {
-            //账号被锁定
-            throw new AccountLockedException(MessageConstant.ACCOUNT_LOCKED);
-        }
+		if (employee.getStatus() == StatusConstant.DISABLE) {
+			// 账号被锁定
+			throw new AccountLockedException(MessageConstant.ACCOUNT_LOCKED);
+		}
 
-        //3、返回实体对象
-        return employee;
-    }
+		// 3、返回实体对象
+		return employee;
+	}
 
 	/**
 	 * 新增员工
+	 *
 	 * @param employeeDTO
 	 */
 	public void save(EmployeeDTO employeeDTO) {
 		Employee employee = new Employee();
-		//对象属性拷贝
+		// 对象属性拷贝
 		BeanUtils.copyProperties(employeeDTO, employee);
 
 		// 设置账号状态，1为正常，0为锁定
@@ -98,28 +99,30 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	/**
-	* 分页查询
-	* @param employeePageQueryDTO
+	 * 分页查询
+	 *
+	 * @param employeePageQueryDTO
 	 * @return
-	*/
+	 */
 	public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
-		//开始分页查询
-		PageHelper.startPage(employeePageQueryDTO.getPage(),employeePageQueryDTO.getPageSize());
+		// 开始分页查询
+		PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
 		Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
 
 		long total = page.getTotal();
 		List<Employee> records = page.getResult();
-		return new PageResult(total,records);
+		return new PageResult(total, records);
 	}
 
 	/**
 	 * 启用禁用员工账号
+	 *
 	 * @param status
 	 * @param id
 	 * @return
 	 */
-	public void startOrStop(Integer status, long id) {
-		//update employee set status = ? where id = ?
+	public void startOrStop(Integer status, Long id) {
+		// update employee set status = ? where id = ?
 
 		// Employee employee = new Employee();
 		// employee.setStatus(status);
@@ -132,5 +135,33 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 		employeeMapper.update(employee);
 	}
+
+	/**
+	 * 根据id查询员工信息
+	 *
+	 * @param id
+	 * @return
+	 */
+	public Employee getById(Long id) {
+		Employee employee = employeeMapper.getById(id);
+		employee.setPassword("****");
+		return employee;
+	}
+
+	/**
+	 * 编辑员工信息
+	 *
+	 * @param employeeDTO
+	 */
+	public void update(EmployeeDTO employeeDTO) {
+		Employee employee = new Employee();
+		BeanUtils.copyProperties(employeeDTO, employee);
+
+		employee.setUpdateTime(LocalDateTime.now());
+		employee.setUpdateUser(BaseContext.getCurrentId());
+
+		employeeMapper.update(employee);
+	}
+
 
 }
