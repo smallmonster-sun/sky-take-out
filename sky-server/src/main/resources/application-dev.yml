@@ -11,4 +11,3 @@ sky:
     access-key-id: ${ALIYUN_ACCESS_KEY}
     access-key-secret: ${ALIYUN_ACCESS_SECRET}
     bucket-name: sky635203
-
