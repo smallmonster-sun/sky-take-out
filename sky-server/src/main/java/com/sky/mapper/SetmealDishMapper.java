@@ -39,9 +39,9 @@ public interface SetmealDishMapper {
 
 	/**
 	 * 批量删除
-	 * @param ids
+	 * @param setmealIds
 	 */
-	void deleteBySetmealIds(List<Long> ids);
+	void deleteBySetmealIds(List<Long> setmealIds);
 
 	/**
 	 * 根据id查询套餐关系
