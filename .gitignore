@@ -1,7 +1,16 @@
-**/target/
-.idea
+# IDEA 配置文件
+.idea/
 *.iml
+*.iws
+*.ipr
+
+# Maven 编译产物
+**/target/
 *.class
+
+# 测试文件
 *Test.java
 **/test/
-./sky-server/src/main/resources/application-dev.yml
+
+# 本地敏感配置文件（关键！）
+**/application-dev.yml
