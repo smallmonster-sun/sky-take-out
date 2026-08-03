@@ -17,12 +17,11 @@ import com.sky.mapper.*;
 import com.sky.result.PageResult;
 import com.sky.service.OrderService;
 import com.sky.utils.HttpClientUtil;
-import com.sky.utils.WeChatPayUtil;
-import com.sky.utils.WebSocketServer;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +55,9 @@ public class OrderServiceImpl implements OrderService {
 	@Autowired
 	private ShoppingCartMapper shoppingCartMapper;
 	@Autowired
-	private WeChatPayUtil  weChatPayUtil;
-	@Autowired
 	private UserMapper userMapper;
+	@Autowired
+	private WebSocketServer webSocketServer;
 	@Value("${sky.shop.address}")
 	private String shopAddress;
 	@Value("${sky.baidu.ak}")
@@ -174,8 +173,9 @@ public class OrderServiceImpl implements OrderService {
 		map.put("content", "订单号：" + orderNumber);
 
 		// 通过WebSocket实现来单提醒，向客户端浏览器推送消息
-		WebSocketServer.sendToAllClient(JSON.toJSONString(map));
+		webSocketServer.sendToAllClient(JSON.toJSONString(map));
 		log.info("来单提醒：{}", JSON.toJSONString(map));
+
 
 		return vo;
 	}
@@ -548,7 +548,9 @@ public class OrderServiceImpl implements OrderService {
 
 		JSONObject jsonObject = JSON.parseObject(shopCoordinate);
 		if(!jsonObject.getString("status").equals("0")){
+			log.error(shopCoordinate);
 			throw new OrderBusinessException("店铺地址解析失败");
+
 		}
 
 		//数据解析
@@ -590,10 +592,29 @@ public class OrderServiceImpl implements OrderService {
 		JSONObject result = jsonObject.getJSONObject("result");
 		JSONArray jsonArray = (JSONArray) result.get("routes");
 		Integer distance = (Integer) ((JSONObject) jsonArray.get(0)).get("distance");
-
-		if(distance > 5000){
+		log.info(distance.toString());
+		/*if(distance > 5000){
 			//配送距离超过5000米
 			throw new OrderBusinessException("超出配送范围");
+		}*/
+	}
+
+	/**
+	 * 客户催单
+	 * @param id
+	 */
+	public void reminder(Long id) {
+		//根据id查询订单
+		Orders ordersDB = orderMapper.getById(id);
+		//校验订单是否存在
+		if(ordersDB == null){
+			throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
 		}
+		Map map = new HashMap();
+		map.put("type", 2);
+		map.put("orderId", id);
+		map.put("content","订单号:"+ordersDB.getNumber());
+		//通过websocket向客户端浏览器推送消息
+		webSocketServer.sendToAllClient(JSON.toJSONString(map));
 	}
 }
