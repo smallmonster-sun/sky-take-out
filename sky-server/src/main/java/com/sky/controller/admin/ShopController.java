@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Key;
-
 /**
  * @Project: sky-take-out
  * @Package: com.sky.controller.admin
@@ -56,6 +54,4 @@ public class ShopController {
 		log.info("获取到店铺的营业状态：{}", value == 1 ? "营业中" : "打样中");
 		return Result.success(value);
 	}
-
-
 }

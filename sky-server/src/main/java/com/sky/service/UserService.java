@@ -12,11 +12,12 @@ import com.sky.entity.User;
  * @Description:
  **/
 public interface UserService {
-		/**
-		 * 微信登录
-		 * @param userLoginDTO
-		 * @return
-		 */
-		User wxLogin(UserLoginDTO userLoginDTO);
+	/**
+	 * 微信登录
+	 *
+	 * @param userLoginDTO
+	 * @return
+	 */
+	User wxLogin(UserLoginDTO userLoginDTO);
 }
 

@@ -6,7 +6,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Project: sky-take-out
@@ -29,6 +31,7 @@ public class ShopController {
 
 	/**
 	 * 获取店铺的营业状态
+	 *
 	 * @return
 	 */
 	@GetMapping("/status")

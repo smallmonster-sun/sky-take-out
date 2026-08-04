@@ -19,6 +19,7 @@ import java.util.List;
 public interface SetmealDishMapper {
 	/**
 	 * 根据菜品id查询对应的套餐id
+	 *
 	 * @param dishIds
 	 * @return
 	 */
@@ -26,12 +27,14 @@ public interface SetmealDishMapper {
 
 	/**
 	 * 批量保持套餐和菜品的关联关系
+	 *
 	 * @param setmealDishes
 	 */
 	void insertBatch(List<SetmealDish> setmealDishes);
 
 	/**
 	 * 根据套餐id删除套餐和菜品的关联关系
+	 *
 	 * @param setmealId
 	 */
 	@Delete("delete from setmeal_dish where setmeal_id = #{setmealId} ")
@@ -39,12 +42,14 @@ public interface SetmealDishMapper {
 
 	/**
 	 * 批量删除
+	 *
 	 * @param setmealIds
 	 */
 	void deleteBySetmealIds(List<Long> setmealIds);
 
 	/**
 	 * 根据id查询套餐关系
+	 *
 	 * @param id
 	 * @return
 	 */

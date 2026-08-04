@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 @RestController("userDishController")
@@ -49,7 +50,8 @@ public class DishController {
 
 		if (jsonStr != null) {
 			// JSON字符串转回List集合
-			list = objectMapper.readValue(jsonStr, new TypeReference<List<DishVO>>() {});
+			list = objectMapper.readValue(jsonStr, new TypeReference<List<DishVO>>() {
+			});
 			return Result.success(list);
 		}
 
